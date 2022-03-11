@@ -77,7 +77,7 @@ func NewTuner(useCgroup bool, highPercent float64, lowPercent float64) *finalize
 	}
 
 	memoryLimitInPercent = highPercent
-
+    memoryBottomInPercent = lowPercent
 	f := &finalizer{
 		ch: make(chan time.Time, 1),
 	}

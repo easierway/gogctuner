@@ -16,7 +16,7 @@ func initProcess() {
 		highPercent = 70
 		lowPercent = 30 
 	)
-	go NewTuner(inCgroup, percent)
+	go NewTuner(inCgroup, highPercent, lowPercent)
 }
 ```
 
