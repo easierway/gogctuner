@@ -45,7 +45,7 @@ func getCurrentPercentAndChangeGOGC() {
 		return
 	}
 
-	newgogc := (memoryLimitInPercent - memPercent) / memPercent * 100.0
+	newgogc := (memoryLimitInPercent - memPercent + memoryBottomInPercent) / memPercent * 100.0
 
 	// if newgogc < 0, we have to use the previous gogc to determine the next
 	if newgogc < 0 {
