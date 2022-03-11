@@ -1,18 +1,23 @@
 package gogctuner
 
 import (
-	mem_util "github.com/shirou/gopsutil/mem"
-	"github.com/shirou/gopsutil/process"
 	"io/ioutil"
 	"math"
 	"os"
 	"strconv"
 	"strings"
+
+	mem_util "github.com/shirou/gopsutil/mem"
+	"github.com/shirou/gopsutil/process"
 )
 
 const cgroupMemLimitPath = "/sys/fs/cgroup/memory/memory.limit_in_bytes"
 
 var memoryLimitInPercent float64 = 100 // default no limit
+
+var memoryBottomInPercent float64 = 50
+
+var smallGCPercent float64 = 5
 
 // copied from https://github.com/containerd/cgroups/blob/318312a373405e5e91134d8063d04d59768a1bff/utils.go#L251
 func parseUint(s string, base, bitSize int) (uint64, error) {

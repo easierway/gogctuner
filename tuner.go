@@ -1,3 +1,5 @@
+// updated Uber's GOGCTuner to bring the effect as "ballast"
+// chaocai2001@icloud.com
 package gogctuner
 
 import (
@@ -37,6 +39,12 @@ func getCurrentPercentAndChangeGOGC() {
 	// 	hard_target =  memoryLimitInPercent
 	// 	live_dataset = memPercent
 	//  so gogc = (hard_target - livedataset) / live_dataset * 100
+
+	if memPercent < memoryBottomInPercent {
+		previousGOGC = debug.SetGCPercent(int(smallGCPercent))
+		return
+	}
+
 	newgogc := (memoryLimitInPercent - memPercent) / memPercent * 100.0
 
 	// if newgogc < 0, we have to use the previous gogc to determine the next
@@ -59,15 +67,16 @@ func finalizerHandler(f *finalizerRef) {
 
 // NewTuner
 //   set useCgroup to true if your app is in docker
-//   set percent to control the gc trigger, 0-100, 100 or upper means no limit
-func NewTuner(useCgroup bool, percent float64) *finalizer {
+//   set highPercent and lowPercent to control the gc trigger
+
+func NewTuner(useCgroup bool, highPercent float64, lowPercent float64) *finalizer {
 	if useCgroup {
 		getUsage = getUsageCGroup
 	} else {
 		getUsage = getUsageNormal
 	}
 
-	memoryLimitInPercent = percent
+	memoryLimitInPercent = highPercent
 
 	f := &finalizer{
 		ch: make(chan time.Time, 1),
